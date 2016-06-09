@@ -1,0 +1,17 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}
+The Circle
+{% endblock %}
+
+
+{% block content %}
+
+
+    <form method="post">
+    {%  csrf_token %}
+        {{ login.as_p }}
+        <input type="submit" value="Log in"/>
+    </form>
+
+{% endblock %}

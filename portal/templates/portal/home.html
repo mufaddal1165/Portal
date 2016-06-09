@@ -1,0 +1,17 @@
+{% extends "portal/base.html" %}
+{% block title %}
+    The Circle | Home
+{% endblock %}
+{% block content %}
+
+    <div class="ui-widget-header">
+        {{ user }}
+
+        <a href="{% url 'portal:logout' %}">Logout</a>
+    </div>
+    <div class="ui-widget-content">
+        <a>Mentors </a>
+        <a href="{% url 'portal:camp' %}">Camp</a>
+        <a href="{% url 'portal:resources' %}">Resources</a>
+    </div>
+{% endblock %}
