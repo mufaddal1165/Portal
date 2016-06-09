@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ModelForm
 
 
 # Create your models here.
@@ -39,6 +40,12 @@ LANGUAGES_AND_FRAMEWORKS = (
     ('NJS', 'node.js'),
 )
 
+FACULTY_CHOICES = (
+    ('FES', 'Engineering Sciences'),
+    ('FME', 'Mechanical Engineering'),
+    ('FCSE', 'Computer Sciences and Engineering'),
+)
+
 
 class Mentor(Users):
     camp = models.ManyToManyField(Camps)
@@ -48,11 +55,6 @@ class Developer(Users):
     """
     The students who sign up for the portal
     """
-    FACULTY_CHOICES = (
-        ('FES', 'Engineering Sciences'),
-        ('FME', 'Mechanical Engineering'),
-        ('FCSE', 'Computer Sciences and Engineering'),
-    )
 
     regNo = models.CharField(max_length=7,
                              verbose_name='Registration Number'
@@ -68,3 +70,9 @@ class Developer(Users):
 class Executive(Users):
     class Meta:
         verbose_name = "Executive"
+
+
+class DeveloperForm(ModelForm):
+    class Meta:
+        model = Developer
+        fields = ['name','regNo', 'faculty', 'camp', 'previousExperience', 'whyjoin', 'languagesKnown']

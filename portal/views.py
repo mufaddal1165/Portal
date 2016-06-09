@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
+from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps
 
 
 # Create your views here.
@@ -51,10 +52,28 @@ def Resources(request):
     return HttpResponse("Welcome to resources section")
 
 
-def Mentors(request):
-    pass
+def SignUp(request):
+    if request.method == "POST":
+        user_new = User.objects.create_user(username=request.POST['username'],
+                                            password=request.POST['password'],
+                                            email=request.POST['email'])
+        user_new.save()
+        Developer.objects.create(regNo=request.POST['regNo'],
+                                 name=request.POST['name'],
+                                 faculty=request.POST['faculty'],
+                                 camp=Camps.objects.get(pk=request.POST['camp']),
+                                 previousExperience=request.POST['previousExperience'],
+                                 whyjoin=request.POST['whyjoin'],
+                                 languagesKnown=request.POST['languagesKnown'],
+                                 user=user_new
+
+                                 )
+        return HttpResponse("Success")
+    form = DeveloperForm()
+
+    return render(request, 'portal/signup.html', {'form': form})
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=20, label='User Name')
+    username = forms.CharField(max_length=30, label='User Name')
     password = forms.CharField(max_length=20, label='Password', widget=forms.PasswordInput)
