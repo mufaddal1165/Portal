@@ -9,15 +9,21 @@ from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps
 
 # Create your views here.
 
+def authentication(function):
+    def wrapper(request):
+        if not request.user.is_authenticated():
+            return redirect("/")
+        return function(request)
+    return wrapper
 
-
+@authentication
 def home(request):
-    if not request.user.is_authenticated():
-        return redirect("/")
     return render(request, 'portal/home.html', {})
 
 
 def root(request):
+    if request.user.is_authenticated():
+        return redirect("/home")
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -33,11 +39,8 @@ def root(request):
     loginForm = LoginForm()
     return render(request, 'portal/root.html', {'login': loginForm})
 
-
+@authentication
 def TheCamp(request):
-    if not request.user.is_authenticated():
-        return HttpResponse("Login first please")
-    else:
         return HttpResponse("Welcome to the Camp")
 
 
@@ -45,18 +48,18 @@ def Logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('portal:root', args=''))
 
-
+@authentication
 def Resources(request):
-    if not request.user.is_authenticated():
-        return redirect("/")
     return HttpResponse("Welcome to resources section")
 
 
 def SignUp(request):
     if request.method == "POST":
+
         user_new = User.objects.create_user(username=request.POST['username'],
                                             password=request.POST['password'],
                                             email=request.POST['email'])
+
         user_new.save()
         Developer.objects.create(regNo=request.POST['regNo'],
                                  name=request.POST['name'],

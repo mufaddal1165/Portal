@@ -75,4 +75,4 @@ class Executive(Users):
 class DeveloperForm(ModelForm):
     class Meta:
         model = Developer
-        fields = ['name','regNo', 'faculty', 'camp', 'previousExperience', 'whyjoin', 'languagesKnown']
+        fields = ['name', 'regNo', 'faculty', 'camp', 'previousExperience', 'whyjoin', 'languagesKnown']
