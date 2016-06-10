@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, GroupManager
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
 from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps
@@ -14,7 +14,9 @@ def authentication(function):
         if not request.user.is_authenticated():
             return redirect("/")
         return function(request)
+
     return wrapper
+
 
 @authentication
 def home(request):
@@ -39,14 +41,16 @@ def root(request):
     loginForm = LoginForm()
     return render(request, 'portal/root.html', {'login': loginForm})
 
+
 @authentication
 def TheCamp(request):
-        return HttpResponse("Welcome to the Camp")
+    return HttpResponse("Welcome to the Camp")
 
 
 def Logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('portal:root', args=''))
+
 
 @authentication
 def Resources(request):
@@ -55,12 +59,12 @@ def Resources(request):
 
 def SignUp(request):
     if request.method == "POST":
-
         user_new = User.objects.create_user(username=request.POST['username'],
                                             password=request.POST['password'],
                                             email=request.POST['email'])
-
+        user_new.groups.add(Group.objects.get(name="Developers"))
         user_new.save()
+        user_new.groups.add(User.groups.get(name="Developers"))
         Developer.objects.create(regNo=request.POST['regNo'],
                                  name=request.POST['name'],
                                  faculty=request.POST['faculty'],
