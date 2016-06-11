@@ -1,17 +1,81 @@
 {% extends 'portal/base.html' %}
 
 {% block title %}
-The Circle
+
+    <style>
+        #container {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 28em;
+            min-width: 300px;
+            margin: 100px auto;
+            position: relative;
+            font-family: "Century Gothic";
+        }
+
+        #id_username, #id_password {
+            width: 100%;
+            height: 24px;
+        {#            margin: 5px;#} border-radius: 5px;
+            padding: 1%;
+        }
+
+        #fields {
+            padding: 20px 20px 0;
+
+        }
+
+        #branding {
+            padding: 10px;
+            color: white;
+            font-size: 20px;
+
+            background: cornflowerblue;
+        }
+
+        #thebutton {
+            color: white;
+            background: cornflowerblue;
+            border: none;
+            padding: 10px;
+            font-size: 15px;
+            border-radius: 5px;
+        }
+
+        #submitbutton {
+            margin: auto;
+{#            padding: 1em 45% 0;#}
+            color: cornflowerblue;
+        }
+
+        #SignUp {
+{#            padding: 1em 45% 0;#}
+        }
+    </style>
 {% endblock %}
 
 
 {% block content %}
 
+    <div id="container" >
+        <div id="branding">
+            Login
+        </div>
 
-    <form method="post">
-    {%  csrf_token %}
-        {{ login.as_p }}
-        <input type="submit" value="Log in"/>
-    </form>
-    <a href="{% url 'portal:signup' %}"> SignUp </a>
+        <form method="post">
+            {% csrf_token %}
+            <div id="fields" >
+                {{ login.as_p }}
+            </div>
+            <div id="submitbutton" align="center">
+                <input type="submit" value="Log in" id="thebutton"/>
+            </div>
+        </form>
+        <div id="SignUp" align="center">
+            <a href="{% url 'portal:signup' %}"> SignUp </a>
+        </div>
+    </div>
+
 {% endblock %}

@@ -72,7 +72,20 @@ class Executive(Users):
         verbose_name = "Executive"
 
 
+class Resources(models.Model):
+    name = models.CharField(max_length=60, verbose_name='Name')
+    category = models.CharField(max_length=20, verbose_name='Category')
+    camp = models.ForeignKey(Camps, verbose_name='Camp')
+    link = models.FileField(upload_to='uploads/%Y/%m/%d')
+
+
 class DeveloperForm(ModelForm):
     class Meta:
         model = Developer
         fields = ['name', 'regNo', 'faculty', 'camp', 'previousExperience', 'whyjoin', 'languagesKnown']
+
+
+class FileUploadForm(ModelForm):
+    class Meta:
+        model = Resources
+        fields = ['name', 'category', 'camp', 'link']

@@ -18,6 +18,7 @@ from django.contrib import admin
 from portal import views
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
+from portal.models import Developer
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -31,9 +32,20 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
+class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Developer
+        fields = ('user', 'name')
+
+
+class DeveloperViewSet(viewsets.ModelViewSet):
+    queryset = Developer.objects.all()
+    serializer_class = DeveloperSerializer
+
+
 router = routers.DefaultRouter()
 router.register(r'User', UserViewSet)
-
+router.register(r'Developer', DeveloperViewSet)
 app_name = 'portal'
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

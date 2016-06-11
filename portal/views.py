@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.contrib.auth.models import User, Group, GroupManager
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
 from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps
@@ -20,7 +21,9 @@ def authentication(function):
 
 @authentication
 def home(request):
-    return render(request, 'portal/home.html', {})
+    is_developer = request.user.groups.filter(name="Developers").exists()
+    pageTitle = "Home"
+    return render(request, 'portal/home.html', {'is_developer': is_developer, 'title': pageTitle})
 
 
 def root(request):
@@ -39,7 +42,8 @@ def root(request):
         else:
             return HttpResponse("User not present")
     loginForm = LoginForm()
-    return render(request, 'portal/root.html', {'login': loginForm})
+
+    return render(request, 'portal/root.html', {'login': loginForm,})
 
 
 @authentication
@@ -54,7 +58,9 @@ def Logout(request):
 
 @authentication
 def Resources(request):
-    return HttpResponse("Welcome to resources section")
+    pagetitle = 'Resources'
+
+    return render(request, 'portal/resources.html', {'title': pagetitle})
 
 
 def SignUp(request):
@@ -63,8 +69,9 @@ def SignUp(request):
                                             password=request.POST['password'],
                                             email=request.POST['email'])
         user_new.groups.add(Group.objects.get(name="Developers"))
+        # user_new.groups.
         user_new.save()
-        user_new.groups.add(User.groups.get(name="Developers"))
+        # user_new.groups.add(User.groups.get(name="Developers"))
         Developer.objects.create(regNo=request.POST['regNo'],
                                  name=request.POST['name'],
                                  faculty=request.POST['faculty'],
@@ -77,8 +84,8 @@ def SignUp(request):
                                  )
         return HttpResponse("Success")
     form = DeveloperForm()
-
-    return render(request, 'portal/signup.html', {'form': form})
+    pageTitle = 'Signup'
+    return render(request, 'portal/signup.html', {'form': form, 'title': pageTitle})
 
 
 class LoginForm(forms.Form):

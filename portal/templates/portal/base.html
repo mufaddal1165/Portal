@@ -1,14 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %}</title>
-</head>
-<body>
 
-    {% block content %}
+<head>
+    {% block pageTitle %} {# Common to all #}
+        <title> The Circle {{ title }}</title>
+    {% endblock %}
+    {% block title %} {#  overridden by templates #}
 
     {% endblock %}
+    {% block headerinformation %} {# final #}
+        <meta charset="UTF-8">
+        <style>
+            header {
+                text-align: right;
+                margin: 5px;
+                padding: 5px;
+                height: 50px;
+                background: cornflowerblue;
+            }
+
+            #info {
+                color: white;
+            }
+
+        </style>
+    {% endblock %}
+</head>
+<body>
+{% block essential %} {# final #}
+    <header>
+        <div id="Titles" align="left">
+
+            {{ title }}
+
+        </div>
+        {% if user.is_authenticated %}
+            <div id="info">
+                {{ user }}
+                //
+                <a href="{% url 'portal:logout' %}">Logout</a>
+            </div>
+        {% endif %}
+    </header>
+
+{% endblock %}
+
+{% block content %} {# overridden by templates #}
+
+{% endblock %}
 
 
 </body>
