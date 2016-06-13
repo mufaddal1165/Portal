@@ -5,7 +5,9 @@ from django.contrib.auth.models import User, Group, GroupManager
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
-from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps
+from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps, FileUploadForm, Resources as ResourceModel, \
+    FormModel
+from django.conf import settings
 
 
 # Create your views here.
@@ -48,7 +50,8 @@ def root(request):
 
 @authentication
 def TheCamp(request):
-    return HttpResponse("Welcome to the Camp")
+    title = 'Camp'
+    return render(request, 'portal/camp.html', {'title': title})
 
 
 def Logout(request):
@@ -58,9 +61,14 @@ def Logout(request):
 
 @authentication
 def Resources(request):
+    if request.method == "POST":
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+    resources = ResourceModel.objects.all()
     pagetitle = 'Resources'
-
-    return render(request, 'portal/resources.html', {'title': pagetitle})
+    form = FileUploadForm()
+    return render(request, 'portal/resources.html', {'title': pagetitle, 'form': form, 'resources': resources})
 
 
 def SignUp(request):

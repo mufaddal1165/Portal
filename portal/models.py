@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+import datetime
 
 
 # Create your models here.
@@ -73,10 +74,23 @@ class Executive(Users):
 
 
 class Resources(models.Model):
-    name = models.CharField(max_length=60, verbose_name='Name')
-    category = models.CharField(max_length=20, verbose_name='Category')
+    CATEGORY = (
+        ('VD', 'Video'),
+        ('BK', 'Book'),
+        ('WEB', 'Website'),
+        ('DOC', 'Document')
+    )
+
+    category = models.CharField(max_length=20, verbose_name='Category', choices=CATEGORY)
     camp = models.ForeignKey(Camps, verbose_name='Camp')
-    link = models.FileField(upload_to='uploads/%Y/%m/%d')
+    link = models.FileField(upload_to='uploads')
+    title = models.CharField(max_length=60, verbose_name='Name')
+
+    class Meta:
+        verbose_name = 'Resource'
+
+    def __str__(self):
+        return self.title
 
 
 class DeveloperForm(ModelForm):
@@ -88,4 +102,38 @@ class DeveloperForm(ModelForm):
 class FileUploadForm(ModelForm):
     class Meta:
         model = Resources
-        fields = ['name', 'category', 'camp', 'link']
+        fields = ['title', 'link', 'category', 'camp', ]
+
+
+class ModelUpload(models.Model):
+    thefile = models.FileField(upload_to='uploads')
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+
+
+class FormModel(ModelForm):
+    class Meta:
+        model = ModelUpload
+        fields = ['name', 'thefile']
+
+
+class ForumTopics(models.Model):
+    camp = models.ForeignKey(Camps, on_delete=models.CASCADE)
+    title = models.CharField(max_length=300, verbose_name=
+    "Title")
+    description = models.CharField(max_length=1000, verbose_name="Description")
+    user = models.ForeignKey(User, verbose_name='User')
+    datetime = models.DateTimeField(verbose_name='Time', auto_now=datetime.timedelta)
+
+    def __str__(self):
+        return self.title
+
+
+class ForumThreads(models.Model):
+    topic = models.ForeignKey(ForumTopics, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name="User")
+    datetime = models.DateTimeField(verbose_name="Time", auto_now=datetime.time)
+    text = models.CharField(max_length=5000, verbose_name='Text')
+    images = models.ImageField(null=True, upload_to='uploads')
