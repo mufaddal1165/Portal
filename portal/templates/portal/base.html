@@ -14,9 +14,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         {#        <link rel="stylesheet" href="{% static "portal/bootstrap-tweaks.css" %}">#}
+{#                <link rel="stylesheet" href="{% static "portal/bootstrap.min.css" %}">#}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        {#        <link rel="stylesheet" href="{% static "portal/bootstrap.min.css" %}">#}
+
         {#        <script src="{% static "portal/jquery-1.11.3.min.js" %}"></script>#}
         {#        <script src="{% static "portal/bootstrap.min.js" %}"></script>#}
     {% endblock %}
@@ -52,11 +53,7 @@
         </nav>
 
     {% endblock %}
-    <div class="navbar">
 
-        {% block navbars %} {#  to be overridden #}
-        {% endblock %}
-    </div>
     {% block content %} {# overridden by templates #}
 
     {% endblock %}

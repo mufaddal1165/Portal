@@ -73,16 +73,27 @@ class Executive(Users):
         verbose_name = "Executive"
 
 
+class ResourceCategory(models.Model):
+    name = models.CharField(max_length=20, verbose_name='Category')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
+
 class Resources(models.Model):
     CATEGORY = (
-        ('VD', 'Video'),
-        ('BK', 'Book'),
-        ('WEB', 'Website'),
-        ('DOC', 'Document'),
-        ('IMG','Image')
+        ('VD', 'Videos'),
+        ('BK', 'Books'),
+        ('WEB', 'Websites'),
+        ('DOC', 'Documents'),
+        ('IMG', 'Images')
     )
 
-    category = models.CharField(max_length=20, verbose_name='Category', choices=CATEGORY)
+    category = models.ForeignKey(ResourceCategory)
     camp = models.ForeignKey(Camps, verbose_name='Camp')
     link = models.FileField(upload_to='uploads')
     title = models.CharField(max_length=60, verbose_name='Name')
@@ -139,8 +150,9 @@ class ForumThreads(models.Model):
     text = models.CharField(max_length=5000, verbose_name='Text')
     images = models.ImageField(null=True, upload_to='uploads')
 
+
 class Posts(models.Model):
     text = models.CharField(max_length=5000)
-    datetime=models.DateTimeField(auto_now=datetime.time)
-    camp=models.ForeignKey(Camps)
+    datetime = models.DateTimeField(auto_now=datetime.time)
+    camp = models.ForeignKey(Camps)
     attachment = models.OneToOneField(Resources)

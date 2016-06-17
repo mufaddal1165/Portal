@@ -61,12 +61,17 @@ def Logout(request):
 
 @authentication
 def Resources(request):
-    resources = ResourceModel.objects.all()
+    resources = ResourceModel
+    resourcesObjects = ResourceModel.objects.all()
     pagetitle = 'Resources'
+    listofCamps = Camps.objects.all()
+    if request.method == "GET":
+        return HttpResponse("Success")
     is_developer = request.user.groups.filter(name="Developers").exists()
     if (is_developer):
         return render(request, 'portal/resources.html',
-                      {'title': pagetitle, 'resources': resources, 'is_developer': is_developer})
+                      {'title': pagetitle, 'resources': resources, 'is_developer': is_developer,
+                       'resourcesObjects': resourcesObjects, 'Camps': listofCamps})
     else:
         if request.method == "POST":
             form = FileUploadForm(request.POST, request.FILES)
@@ -74,7 +79,9 @@ def Resources(request):
                 form.save()
 
         form = FileUploadForm()
-        return render(request, 'portal/resources.html', {'title': pagetitle, 'form': form, 'resources': resources})
+        return render(request, 'portal/resources.html',
+                      {'title': pagetitle, 'form': form, 'resources': resources, 'resourcesObjects': resourcesObjects,
+                       'Camps': listofCamps})
 
 
 def SignUp(request):
