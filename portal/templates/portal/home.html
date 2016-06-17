@@ -1,32 +1,11 @@
 {% extends "portal/base.html" %}
 {% block title %}
 
-    <style>
-
-
-
-        .ui-tabs {
-            padding: 10px;
-        }
-
-
-
-        .tab {
-            margin: 5px;
-            padding: 5px;
-        }
-    </style>
 {% endblock %}
+
 {% block content %}
     <br/>
-    <div class="ui-tabs">
-        <span class="tab"><a>Mentors </a></span>
-        <span class="tab"><a href="{% url 'portal:camp' %}">Camp</a></span>
-        <span class="tab"><a href="{% url 'portal:resources' %}">Resources</a></span>
-        <span class="tab"><a>Archives</a></span>
-        <span class="tab"><a>Write to Chair</a></span>
 
-    </div>
     {% if is_developer %}
         <h1>So this i had to try</h1>
     {% endif %}

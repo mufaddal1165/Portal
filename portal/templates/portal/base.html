@@ -1,3 +1,4 @@
+{% load static from staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,52 +11,56 @@
     {% endblock %}
     {% block headerinformation %} {# final #}
         <meta charset="UTF-8">
-        <style>
-            header {
-                text-align: right;
-                margin: 5px;
-                padding: 5px;
-                height: 50px;
-                background: cornflowerblue;
-            }
-
-            #info {
-                color: white;
-            }
-
-            nav {
-                padding: 10px;
-            }
-
-            .navtabs {
-                margin: 5px;
-            }
-        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        {#        <link rel="stylesheet" href="{% static "portal/bootstrap-tweaks.css" %}">#}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        {#        <link rel="stylesheet" href="{% static "portal/bootstrap.min.css" %}">#}
+        {#        <script src="{% static "portal/jquery-1.11.3.min.js" %}"></script>#}
+        {#        <script src="{% static "portal/bootstrap.min.js" %}"></script>#}
     {% endblock %}
 </head>
 <body>
-{% block essential %} {# final #}
-    <header>
-        <div id="Titles" align="left">
 
-            {{ title }}
 
-        </div>
-        {% if user.is_authenticated %}
-            <div id="info">
-                {{ user }}
-                //
-                <a href="{% url 'portal:logout' %}">Logout</a>
+<div class="container">
+    {% block essential %} {# final #}
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">{{ title }}</a>
+                </div>
+                {% if user.is_authenticated %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'portal:home' %}">Home</a></li>
+                        <li><a href="#">Mentors</a></li>
+                        <li><a href="{% url 'portal:camp' %}">Camp</a></li>
+                        <li><a href="{% url 'portal:resources' %}">Resources</a></li>
+                        <li><a href="#">Archives</a></li>
+                        <li><a href="#">Write to Chair</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{ user }}</a></li>
+                        <li><a href="{% url 'portal:logout' %}"><span
+                                class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                    </ul>
+
+                {% endif %}
             </div>
-        {% endif %}
-    </header>
+        </nav>
 
-{% endblock %}
+    {% endblock %}
+    <div class="navbar">
 
-{% block content %} {# overridden by templates #}
+        {% block navbars %} {#  to be overridden #}
+        {% endblock %}
+    </div>
+    {% block content %} {# overridden by templates #}
 
-{% endblock %}
+    {% endblock %}
 
-
+</div>
 </body>
 </html>

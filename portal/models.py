@@ -78,7 +78,8 @@ class Resources(models.Model):
         ('VD', 'Video'),
         ('BK', 'Book'),
         ('WEB', 'Website'),
-        ('DOC', 'Document')
+        ('DOC', 'Document'),
+        ('IMG','Image')
     )
 
     category = models.CharField(max_length=20, verbose_name='Category', choices=CATEGORY)
@@ -137,3 +138,9 @@ class ForumThreads(models.Model):
     datetime = models.DateTimeField(verbose_name="Time", auto_now=datetime.time)
     text = models.CharField(max_length=5000, verbose_name='Text')
     images = models.ImageField(null=True, upload_to='uploads')
+
+class Posts(models.Model):
+    text = models.CharField(max_length=5000)
+    datetime=models.DateTimeField(auto_now=datetime.time)
+    camp=models.ForeignKey(Camps)
+    attachment = models.OneToOneField(Resources)

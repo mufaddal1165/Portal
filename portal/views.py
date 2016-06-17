@@ -24,7 +24,7 @@ def authentication(function):
 @authentication
 def home(request):
     is_developer = request.user.groups.filter(name="Developers").exists()
-    pageTitle = "Home"
+    pageTitle = "Developers' Cell"
     return render(request, 'portal/home.html', {'is_developer': is_developer, 'title': pageTitle})
 
 
@@ -61,14 +61,20 @@ def Logout(request):
 
 @authentication
 def Resources(request):
-    if request.method == "POST":
-        form = FileUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
     resources = ResourceModel.objects.all()
     pagetitle = 'Resources'
-    form = FileUploadForm()
-    return render(request, 'portal/resources.html', {'title': pagetitle, 'form': form, 'resources': resources})
+    is_developer = request.user.groups.filter(name="Developers").exists()
+    if (is_developer):
+        return render(request, 'portal/resources.html',
+                      {'title': pagetitle, 'resources': resources, 'is_developer': is_developer})
+    else:
+        if request.method == "POST":
+            form = FileUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+
+        form = FileUploadForm()
+        return render(request, 'portal/resources.html', {'title': pagetitle, 'form': form, 'resources': resources})
 
 
 def SignUp(request):
