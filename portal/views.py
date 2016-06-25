@@ -6,17 +6,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
 from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps, FileUploadForm, Resources as ResourceModel, \
-    FormModel
+    FormModel, ResourceCategory
 from django.conf import settings
+from django.db.models import Q
 
 
 # Create your views here.
 
 def authentication(function):
-    def wrapper(request):
+    def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated():
             return redirect("/")
-        return function(request)
+        return function(request, *args, **kwargs)
 
     return wrapper
 
@@ -50,7 +51,10 @@ def root(request):
 
 @authentication
 def TheCamp(request):
-    title = 'Camp'
+    if request.user.groups.filter(name="Developers").exists():
+        title = request.user.developer.camp
+    else:
+        title = 'Camp'
     return render(request, 'portal/camp.html', {'title': title})
 
 
@@ -60,28 +64,38 @@ def Logout(request):
 
 
 @authentication
+def ResourcesSearch(request, searchString):
+    return reverse(Resources, args=searchString)
+
+
+@authentication
 def Resources(request):
     resources = ResourceModel
-    resourcesObjects = ResourceModel.objects.all()
+    categories = ResourceCategory.objects.all()
+    query = request.GET.get('searchbox')
+    if query:
+        resourcesObjects = ResourceModel.objects.filter(Q(title__icontains=query)).distinct()
+    else:
+        resourcesObjects = ResourceModel.objects.all()
     pagetitle = 'Resources'
     listofCamps = Camps.objects.all()
-    if request.method == "GET":
-        return HttpResponse("Success")
+    recent_additions = ResourceModel.objects.all().order_by("-timestamp")[:5]
     is_developer = request.user.groups.filter(name="Developers").exists()
-    if (is_developer):
-        return render(request, 'portal/resources.html',
-                      {'title': pagetitle, 'resources': resources, 'is_developer': is_developer,
-                       'resourcesObjects': resourcesObjects, 'Camps': listofCamps})
-    else:
+
+    context = {'title': pagetitle, 'resources': resources, 'is_developer': is_developer,
+               'resourcesObjects': resourcesObjects, 'Camps': listofCamps, 'recent': recent_additions,
+               'categories': categories}
+
+    if not is_developer:
         if request.method == "POST":
             form = FileUploadForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
 
         form = FileUploadForm()
-        return render(request, 'portal/resources.html',
-                      {'title': pagetitle, 'form': form, 'resources': resources, 'resourcesObjects': resourcesObjects,
-                       'Camps': listofCamps})
+        context['form'] = form
+    return render(request, 'portal/resources.html',
+                  context)
 
 
 def SignUp(request):

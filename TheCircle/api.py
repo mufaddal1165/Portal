@@ -1,6 +1,18 @@
 import rest_framework
 from rest_framework import serializers, viewsets
-from portal.models import Resources, Camps, Developer, ForumThreads, ForumTopics, Mentor, User, Posts
+from rest_framework.generics import ListAPIView
+from portal.models import Resources, Camps, Developer, ForumThreads, ForumTopics, Mentor, User, Posts, ResourceCategory
+
+
+class ResourceCategorySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ResourceCategory
+        fields = ('name',)
+
+
+class ResourceCategoryViewSet(viewsets.ModelViewSet):
+    queryset = ResourceCategory.objects.all()
+    serializer_class = ResourceCategorySerializer
 
 
 class MentorSerializer(serializers.HyperlinkedModelSerializer):

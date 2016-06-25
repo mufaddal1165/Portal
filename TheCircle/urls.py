@@ -24,7 +24,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from api import CampSerializer, CampViewSet, DeveloperSerializer, DeveloperViewSet, ForumThreadsSerializer, \
     ForumThreadsViewSet, UserSerializer, UserViewSet, ForumTopicsSerializer, ForumTopicsViewSet, ResourceViewSet, \
-    ResourceSerializer, PostSerializer, PostViewSet
+    ResourceSerializer, PostSerializer, PostViewSet, ResourceCategorySerializer, ResourceCategoryViewSet
 
 router = routers.DefaultRouter()
 router.register(r'User', UserViewSet)
@@ -34,12 +34,13 @@ router.register(r'Camps', CampViewSet)
 router.register(r'ForumThreads', ForumThreadsViewSet)
 router.register(r'ForumTopics', ForumTopicsViewSet)
 router.register(r'Posts', PostViewSet)
+router.register(r'ResourceCategory', ResourceCategoryViewSet)
 app_name = 'portal'
 urlpatterns = [
                   url(r'^admin/', admin.site.urls),
                   url(r'^', include('portal.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-                  url(r'^API', include(router.urls)),
+                  url(r'^api', include(router.urls)),
 
                   # url('^uploads',r'E:/uploads/uploads')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,

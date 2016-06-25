@@ -63,7 +63,7 @@ class Developer(Users):
     faculty = models.CharField(choices=FACULTY_CHOICES, max_length=50)
     camp = models.ForeignKey(Camps, on_delete=models.CASCADE)
     previousExperience = models.BooleanField(default=True, verbose_name="Any previous Programming Experience")
-    whyjoin = models.CharField(max_length=500, verbose_name="Why do you want to join Developers' Cell")
+    whyjoin = models.TextField(verbose_name="Why do you want to join Developers' Cell")
     languagesKnown = models.CharField(choices=LANGUAGES_AND_FRAMEWORKS, verbose_name="Languages and Frameworks Known",
                                       max_length=60)
 
@@ -85,21 +85,16 @@ class ResourceCategory(models.Model):
 
 
 class Resources(models.Model):
-    CATEGORY = (
-        ('VD', 'Videos'),
-        ('BK', 'Books'),
-        ('WEB', 'Websites'),
-        ('DOC', 'Documents'),
-        ('IMG', 'Images')
-    )
 
     category = models.ForeignKey(ResourceCategory)
     camp = models.ForeignKey(Camps, verbose_name='Camp')
     link = models.FileField(upload_to='uploads')
     title = models.CharField(max_length=60, verbose_name='Name')
+    timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Resource'
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.title
@@ -135,7 +130,7 @@ class ForumTopics(models.Model):
     camp = models.ForeignKey(Camps, on_delete=models.CASCADE)
     title = models.CharField(max_length=300, verbose_name=
     "Title")
-    description = models.CharField(max_length=1000, verbose_name="Description")
+    description = models.TextField(max_length=1000, verbose_name="Description")
     user = models.ForeignKey(User, verbose_name='User')
     datetime = models.DateTimeField(verbose_name='Time', auto_now=datetime.timedelta)
 
@@ -147,7 +142,7 @@ class ForumThreads(models.Model):
     topic = models.ForeignKey(ForumTopics, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name="User")
     datetime = models.DateTimeField(verbose_name="Time", auto_now=datetime.time)
-    text = models.CharField(max_length=5000, verbose_name='Text')
+    text = models.TextField(max_length=5000, verbose_name='Text')
     images = models.ImageField(null=True, upload_to='uploads')
 
 
