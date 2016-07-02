@@ -105,7 +105,7 @@
                 <h5> Filter </h5>
                 <ul>
                     {% for category in categories %}
-                        <li><a>{{ category.name }}</a></li>
+                        <li><a name="{{ category.id }}">{{ category.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

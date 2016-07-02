@@ -1,23 +1,59 @@
 {% extends 'portal/base.html' %}
+{% load staticfiles %}
 {% block title %}
+    <script src="{% static "portal/jquery-3.0.0.js" %}"></script>
+    <script type="text/javascript" src={% static "portal/camp.js" %}>
 
+    </script>
 {% endblock %}
 {% block content %}
 
-    <div class="announcements">
-        <h1>This is reserved for announcements</h1>
+    {% if not is_developer %}
+        <ul class="nav nav-tabs">
+            {% for camp in campsbelongto %}
+                <li>
+                    <a href="#">{{ camp }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+
+    <div class="col-lg-6 ">
+        <br/>
+        <form class="form-horizontal well" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <textarea name="text" class="form-control" cols="60">Type post here..</textarea>
+            </div>
+            <select name="camp" id="camp" class="hidden">
+                {% for camp in campsbelongto %}
+                    <option value="{{ forloop.counter }}"> {{ camp }}</option>
+
+                {% endfor %}
+            </select>
+            <br/>
+            <div class="row">
+                <input type="submit" class="btn btn-info" value="Post">
+            </div>
+        </form>
+        <div>
+            {% for a_post in posts %}
+                    <div class="row container-fluid well">
+                        <div class="row">
+                            <h4 class="col-lg-6">{{ a_post.user.first_name }}</h4>
+                            <small class="col-lg-6">{{ a_post.datetime|timesince }} ago</small>
+                        </div>
+                        <strong class="row">{{ a_post.text }}</strong>
+                    </div>
+            {% endfor %}
+
+        </div>
     </div>
 
 
-    <div class="text-danger ">
 
-        This is it
-
-    </div>
-    <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Success!</strong> Indicates a successful or positive action.
-    </div>
 
 
 

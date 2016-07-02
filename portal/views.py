@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse
 from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps, FileUploadForm, Resources as ResourceModel, \
-    FormModel, ResourceCategory
+    FormModel, ResourceCategory, Posts
 from django.conf import settings
 from django.db.models import Q
 
@@ -51,11 +51,28 @@ def root(request):
 
 @authentication
 def TheCamp(request):
-    if request.user.groups.filter(name="Developers").exists():
+    campsBelongto = None
+    posts = Posts.objects.all().order_by('-datetime')
+    is_developer = request.user.groups.filter(name="Developers").exists()
+    is_mentor = request.user.groups.filter(name="Mentors").exists()
+    if is_developer:
         title = request.user.developer.camp
+    elif is_mentor:
+        campsBelongto = request.user.mentor.camp.all()
+        title = campsBelongto.first()
     else:
-        title = 'Camp'
-    return render(request, 'portal/camp.html', {'title': title})
+        campsBelongto = Camps.objects.all()
+        title = campsBelongto.first()
+    if request.method == 'POST':
+        Posts.objects.create(
+            user = request.user,
+            text=request.POST['text'],
+            camp=Camps.objects.get(id=request.POST['camp']),
+        )
+    context = {'title': title, 'posts': posts, "is_developer": is_developer, "is_mentor": is_mentor,
+               'campsbelongto': campsBelongto}
+
+    return render(request, 'portal/camp.html', context)
 
 
 def Logout(request):
@@ -126,3 +143,9 @@ def SignUp(request):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30, label='User Name')
     password = forms.CharField(max_length=20, label='Password', widget=forms.PasswordInput)
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Posts
+        fields = ['text', 'camp']

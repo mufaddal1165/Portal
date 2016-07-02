@@ -46,6 +46,9 @@ FACULTY_CHOICES = (
     ('FME', 'Mechanical Engineering'),
     ('FCSE', 'Computer Sciences and Engineering'),
 )
+"""
+This is a block comment :D
+"""
 
 
 class Mentor(Users):
@@ -85,7 +88,6 @@ class ResourceCategory(models.Model):
 
 
 class Resources(models.Model):
-
     category = models.ForeignKey(ResourceCategory)
     camp = models.ForeignKey(Camps, verbose_name='Camp')
     link = models.FileField(upload_to='uploads')
@@ -97,7 +99,8 @@ class Resources(models.Model):
         ordering = ['-timestamp']
 
     def __str__(self):
-        return self.title
+
+        return "%s".replace("_"," ") % (self.link.__str__())
 
 
 class DeveloperForm(ModelForm):
@@ -147,7 +150,12 @@ class ForumThreads(models.Model):
 
 
 class Posts(models.Model):
-    text = models.CharField(max_length=5000)
+    user = models.ForeignKey(User,default=None)
+    text = models.TextField()
     datetime = models.DateTimeField(auto_now=datetime.time)
     camp = models.ForeignKey(Camps)
-    attachment = models.OneToOneField(Resources)
+
+
+class PosttoResources(models.Model):
+    resource = models.OneToOneField(Resources)
+    Post = models.ForeignKey(Posts, default=None)

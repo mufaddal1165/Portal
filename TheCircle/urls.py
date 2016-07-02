@@ -24,7 +24,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from api import CampSerializer, CampViewSet, DeveloperSerializer, DeveloperViewSet, ForumThreadsSerializer, \
     ForumThreadsViewSet, UserSerializer, UserViewSet, ForumTopicsSerializer, ForumTopicsViewSet, ResourceViewSet, \
-    ResourceSerializer, PostSerializer, PostViewSet, ResourceCategorySerializer, ResourceCategoryViewSet
+    ResourceSerializer, ResourceCategorySerializer, ResourceCategoryViewSet
 
 router = routers.DefaultRouter()
 router.register(r'User', UserViewSet)
@@ -33,7 +33,7 @@ router.register(r'Resource', ResourceViewSet)
 router.register(r'Camps', CampViewSet)
 router.register(r'ForumThreads', ForumThreadsViewSet)
 router.register(r'ForumTopics', ForumTopicsViewSet)
-router.register(r'Posts', PostViewSet)
+# router.register(r'Posts', PostViewSet)
 router.register(r'ResourceCategory', ResourceCategoryViewSet)
 app_name = 'portal'
 urlpatterns = [

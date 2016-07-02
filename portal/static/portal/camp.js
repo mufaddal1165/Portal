@@ -3,5 +3,14 @@
  */
 $(function () {
 
-    
+    $("li").click(
+        function () {
+            $(this).addClass("active");
+            $(this).siblings().removeClass("active");
+            $(".navbar-brand").text($(this).text());
+            var ind = $(this).index();
+            $("#camp").val(ind + 1);
+        }
+    );
+
 });

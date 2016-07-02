@@ -86,12 +86,4 @@ class DeveloperViewSet(viewsets.ModelViewSet):
     serializer_class = DeveloperSerializer
 
 
-class PostSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Posts
-        fields = ('text', 'datetime', 'attachment', 'camp')
 
-
-class PostViewSet(viewsets.ModelViewSet):
-    queryset = Posts.objects.all()
-    serializer_class = PostSerializer
