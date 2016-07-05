@@ -9,9 +9,19 @@ from .models import FACULTY_CHOICES, DeveloperForm, Developer, Camps, FileUpload
     FormModel, ResourceCategory, Posts
 from django.conf import settings
 from django.db.models import Q
+from django.views.generic import ListView
 
 
 # Create your views here.
+class CampView(ListView):
+    model = Posts
+
+    def head(self, *args, **kwargs):
+        lastpost = self.get_queryset().latest('datetime')
+        response = HttpResponse(lastpost)
+        # response['Last Modified'] = lastpost.datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        return response
+
 
 def authentication(function):
     def wrapper(request, *args, **kwargs):
@@ -50,9 +60,23 @@ def root(request):
 
 
 @authentication
-def TheCamp(request):
+def camps(request):
+    is_developer = request.user.groups.filter(name="Developers").exists()
+    is_mentor = request.user.groups.filter(name="Mentors").exists()
+    if is_developer:
+        campID = request.user.developer.camp_id
+    elif is_mentor:
+        campID = request.user.mentor.camp.all().first().id
+    else:
+        campID = 1
+    return HttpResponseRedirect(reverse("portal:camp", args=str(campID)))
+
+
+@authentication
+def TheCamp(request, num):
     campsBelongto = None
-    posts = Posts.objects.all().order_by('-datetime')
+    form = FileUploadForm()
+    posts = Posts.objects.all().order_by('-datetime').filter(camp__id=num)
     is_developer = request.user.groups.filter(name="Developers").exists()
     is_mentor = request.user.groups.filter(name="Mentors").exists()
     if is_developer:
@@ -65,12 +89,12 @@ def TheCamp(request):
         title = campsBelongto.first()
     if request.method == 'POST':
         Posts.objects.create(
-            user = request.user,
+            user=request.user,
             text=request.POST['text'],
-            camp=Camps.objects.get(id=request.POST['camp']),
+            camp=Camps.objects.get(id=num),
         )
     context = {'title': title, 'posts': posts, "is_developer": is_developer, "is_mentor": is_mentor,
-               'campsbelongto': campsBelongto}
+               'campsbelongto': campsBelongto, 'form': form}
 
     return render(request, 'portal/camp.html', context)
 

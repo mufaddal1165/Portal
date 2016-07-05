@@ -12,5 +12,15 @@ $(function () {
             $("#camp").val(ind + 1);
         }
     );
+    $("#posttext").focus(
+        function () {
+            $(this).text(" ");
+        }
+    );
+    $(".updatebutton").click(
+      function () {
+
+      }  
+    );
 
 });

@@ -9,46 +9,88 @@
 {% block content %}
 
     {% if not is_developer %}
-        <ul class="nav nav-tabs">
-            {% for camp in campsbelongto %}
-                <li>
-                    <a href="#">{{ camp }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% if campsbelongto.count > 1 %}
+            <ul class="nav nav-tabs">
+                {% for camp in campsbelongto %}
+                    <li>
+                        <a href="{% url "portal:camp" camp.id %}">{{ camp }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
-
 
 
     <div class="col-lg-6 ">
         <br/>
-        <form class="form-horizontal well" method="post">
-            {% csrf_token %}
-            <div class="row">
-                <textarea name="text" class="form-control" cols="60">Type post here..</textarea>
-            </div>
-            <select name="camp" id="camp" class="hidden">
-                {% for camp in campsbelongto %}
-                    <option value="{{ forloop.counter }}"> {{ camp }}</option>
+        {% if not is_developer %}
+            <form class="form-horizontal well" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <textarea name="text" id="posttext" class="form-control" cols="60">Type post here..</textarea>
+                </div>
+                <select name="camp" id="camp" class="hidden">
+                    {% for camp in campsbelongto %}
+                        <option value="{{ camp.id }}"> {{ camp }}</option>
 
-                {% endfor %}
-            </select>
-            <br/>
-            <div class="row">
-                <input type="submit" class="btn btn-info" value="Post">
-            </div>
-        </form>
+                    {% endfor %}
+                </select>
+                <br/>
+                <div class="row">
+
+                    <button type="button" class="btn btn-info btn-group-sm" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-paperclip"></span> Attachment
+                    </button>
+                    <input type="submit" class="btn btn-success" value="Post">
+                </div>
+            </form>
+        {% endif %}
         <div>
             {% for a_post in posts %}
-                    <div class="row container-fluid well">
-                        <div class="row">
-                            <h4 class="col-lg-6">{{ a_post.user.first_name }}</h4>
-                            <small class="col-lg-6">{{ a_post.datetime|timesince }} ago</small>
-                        </div>
+                <div class="row container-fluid well">
+                    <div class="row">
+                        <h4 class="col-lg-6">{{ a_post.user.first_name }}</h4>
+                        <small class="col-lg-6">{{ a_post.datetime|timesince }} ago</small>
+                        <span class="updatebutton"><a href="#">update</a></span>
+                    </div>
+                    <div id="post_text">
                         <strong class="row">{{ a_post.text }}</strong>
                     </div>
+                </div>
             {% endfor %}
 
+        </div>
+    </div>
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Attachment</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class=" form-horizontal" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <p>
+                            <label>Title</label>
+                            {{ form.title }}
+                        </p>
+                        <p>
+                            <label>Link</label>
+                            {{ form.link }}
+                        </p>
+                        <p>
+                            <label>Description</label>
+                            {{ form.description }}
+                        </p>
+                        <input type="submit" value="Upload"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 

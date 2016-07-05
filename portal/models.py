@@ -93,14 +93,14 @@ class Resources(models.Model):
     link = models.FileField(upload_to='uploads')
     title = models.CharField(max_length=60, verbose_name='Name')
     timestamp = models.DateTimeField(auto_now=True)
+    description = models.TextField(null=True)
 
     class Meta:
         verbose_name = 'Resource'
         ordering = ['-timestamp']
 
     def __str__(self):
-
-        return "%s".replace("_"," ") % (self.link.__str__())
+        return "%s" % self.title
 
 
 class DeveloperForm(ModelForm):
@@ -112,7 +112,7 @@ class DeveloperForm(ModelForm):
 class FileUploadForm(ModelForm):
     class Meta:
         model = Resources
-        fields = ['title', 'link', 'category', 'camp', ]
+        fields = ['title', 'link', 'description', 'category', 'camp', ]
 
 
 class ModelUpload(models.Model):
@@ -150,10 +150,16 @@ class ForumThreads(models.Model):
 
 
 class Posts(models.Model):
-    user = models.ForeignKey(User,default=None)
+    user = models.ForeignKey(User, default=None)
     text = models.TextField()
     datetime = models.DateTimeField(auto_now=datetime.time)
     camp = models.ForeignKey(Camps)
+
+    class Meta:
+        verbose_name = "Post"
+
+    def __str__(self):
+        return "%s"[:30] % self.text
 
 
 class PosttoResources(models.Model):
