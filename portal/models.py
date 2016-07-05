@@ -4,11 +4,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 import datetime
+from django import forms
 
 
 # Create your models here.
 class Camps(models.Model):
     name = models.CharField(max_length=20, verbose_name='Camp', help_text='The groups based on languages taught')
+    jumbotronImage = models.ImageField(upload_to='uploads', null=True)
+    thumbnailImage = models.ImageField(upload_to='uploads', null=True)
 
     class Meta:
         verbose_name = 'Camp'
@@ -94,6 +97,7 @@ class Resources(models.Model):
     title = models.CharField(max_length=60, verbose_name='Name')
     timestamp = models.DateTimeField(auto_now=True)
     description = models.TextField(null=True)
+    user = models.ForeignKey(User)
 
     class Meta:
         verbose_name = 'Resource'
@@ -112,7 +116,8 @@ class DeveloperForm(ModelForm):
 class FileUploadForm(ModelForm):
     class Meta:
         model = Resources
-        fields = ['title', 'link', 'description', 'category', 'camp', ]
+        fields = ['title', 'link', 'description', 'category', 'camp', 'user']
+        widgets = {'user': forms.HiddenInput()}
 
 
 class ModelUpload(models.Model):

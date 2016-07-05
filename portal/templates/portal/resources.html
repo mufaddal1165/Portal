@@ -72,12 +72,13 @@
                             {% for item in resourcesObjects %}
                                 {% if item.camp == camp %}
                                     <li class="list-group-item">
+                                        <div class="row">
+                                            <h5 class="btn" style="display: inline" data-toggle="modal"
+                                                data-target="#myModal{{ item }}">{{ item }}</h5>
+                                            <a href="{{ item.link.url }}"><span
+                                                    class="glyphicon glyphicon-download"></span></a>
 
-                                        <h5 class="btn" style="display: inline" data-toggle="modal"
-                                            data-target="#myModal{{ item }}">{{ item }}</h5>
-                                        <a href="{{ item.link.url }}"><span class="glyphicon glyphicon-download"></span></a>
-                                        <div align="right">
-                                            {{ item.category }}
+                                            <span style="float: right; margin-right: 10px;">  {{ item.category }} </span>
                                         </div>
                                     </li>
                                 {% endif %}

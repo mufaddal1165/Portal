@@ -72,29 +72,41 @@ def camps(request):
     return HttpResponseRedirect(reverse("portal:camp", args=str(campID)))
 
 
+listofAttachments = []
+
+
 @authentication
 def TheCamp(request, num):
     campsBelongto = None
-    form = FileUploadForm()
+
+    form = FileUploadForm(initial={'camp': Camps.objects.get(id=num), 'user': request.user})
+    form.fields['camp'].widget.attrs['hidden'] = True
     posts = Posts.objects.all().order_by('-datetime').filter(camp__id=num)
     is_developer = request.user.groups.filter(name="Developers").exists()
     is_mentor = request.user.groups.filter(name="Mentors").exists()
-    if is_developer:
-        title = request.user.developer.camp
-    elif is_mentor:
+    title = Camps.objects.get(id=num)
+    if is_mentor:
         campsBelongto = request.user.mentor.camp.all()
-        title = campsBelongto.first()
+
     else:
         campsBelongto = Camps.objects.all()
-        title = campsBelongto.first()
+
     if request.method == 'POST':
-        Posts.objects.create(
-            user=request.user,
-            text=request.POST['text'],
-            camp=Camps.objects.get(id=num),
-        )
+        if 'sbPost' in request.POST:
+            Posts.objects.create(
+                user=request.user,
+                text=request.POST['text'],
+                camp=Camps.objects.get(id=num),
+            )
+        if 'sbAttach' in request.POST:
+
+            form = FileUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                new_form = form.save()
+                request.session[new_form.pk]=new_form.pk
+
     context = {'title': title, 'posts': posts, "is_developer": is_developer, "is_mentor": is_mentor,
-               'campsbelongto': campsBelongto, 'form': form}
+               'campsbelongto': campsBelongto, 'form': form, 'attachments': listofAttachments}
 
     return render(request, 'portal/camp.html', context)
 
@@ -133,7 +145,7 @@ def Resources(request):
             if form.is_valid():
                 form.save()
 
-        form = FileUploadForm()
+        form = FileUploadForm(initial={'user': request.user})
         context['form'] = form
     return render(request, 'portal/resources.html',
                   context)
@@ -162,6 +174,17 @@ def SignUp(request):
     form = DeveloperForm()
     pageTitle = 'Signup'
     return render(request, 'portal/signup.html', {'form': form, 'title': pageTitle})
+
+
+@authentication
+def deleteresources(request, resource_id):
+    resource = ResourceModel.objects.get(id=resource_id)
+    camp_id = resource.camp_id
+    if request.user == resource.user or request.user.is_staff:
+        request.session.__delitem__(resource_id)
+        resource.delete()
+
+        return HttpResponseRedirect(reverse("portal:camp", args=str(camp_id)))
 
 
 class LoginForm(forms.Form):

@@ -13,4 +13,6 @@ urlpatterns = [url(r'^home', views.home, name='home'),
                url(r'^resources/$', views.Resources, name='resources'),
                url(r'^signup', views.SignUp, name='signup'),
                url(r'resourcesR/$', views.ResourcesSearch, name="resourcesearch"),
-               url(r'^posts/$', views.CampView.as_view()), ]
+               url(r'^posts/$', views.CampView.as_view()),
+               url(r'deleteresources/(?P<resource_id>\d)', views.deleteresources, name="deleteresources")
+               ]

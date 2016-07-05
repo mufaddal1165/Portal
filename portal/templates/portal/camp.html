@@ -19,7 +19,11 @@
             </ul>
         {% endif %}
     {% endif %}
+    <div class="jumbotron">
 
+        <h1>{{ title }}</h1>
+
+    </div>
 
     <div class="col-lg-6 ">
         <br/>
@@ -41,7 +45,17 @@
                     <button type="button" class="btn btn-info btn-group-sm" data-toggle="modal" data-target="#myModal">
                         <span class="glyphicon glyphicon-paperclip"></span> Attachment
                     </button>
-                    <input type="submit" class="btn btn-success" value="Post">
+                    <input type="submit" class="btn btn-success" name="sbPost" value="Post">
+                </div>
+                <br/>
+                <div id="atttachments">
+
+                    {% for attachment in attachments %}
+                        <p>{{ attachment.title }}<span style="float: right;">
+                           <a href="{% url "portal:deleteresources" attachment.id %}">&times;</a>
+                        </span></p>
+                    {% endfor %}
+
                 </div>
             </form>
         {% endif %}
@@ -72,19 +86,8 @@
                 <div class="modal-body">
                     <form method="post" class=" form-horizontal" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <p>
-                            <label>Title</label>
-                            {{ form.title }}
-                        </p>
-                        <p>
-                            <label>Link</label>
-                            {{ form.link }}
-                        </p>
-                        <p>
-                            <label>Description</label>
-                            {{ form.description }}
-                        </p>
-                        <input type="submit" value="Upload"/>
+                        {{ form.as_p }}
+                        <input type="submit" name="sbAttach" value="Upload"/>
                     </form>
                 </div>
                 <div class="modal-footer">
